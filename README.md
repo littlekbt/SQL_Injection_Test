@@ -1,25 +1,25 @@
 # SQL_Injection_Test
 
 
-### 1, EC2$B%m%0%$%s(B
-$B$*9%$-$J%=%U%H$G%m%0%$%s$7$F$/$@$5$$!#(B
+### 1, EC2ログイン
+お好きなソフトでログインしてください。
 
-### 2, $B3F%_%I%k%&%'%"%$%s%9%H!<%k(B
+### 2, 各ミドルウェアインストール
 ```
 sudo yum update -y
 ```
 
-**Apache$B%$%s%9%H!<%k(B**
+**Apacheインストール**
 ```
 sudo yum -y install httpd
 ```
 
-**PHP$B%$%s%9%H!<%k(B**
+**PHPインストール**
 ```
 sudo yum install -y php php-devel php-mysql php-gd php-mbstring
 ```
 
-**MySQL $B%$%s%9%H!<%k(B**
+**MySQL インストール**
 ```
 sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm -y
 sudo yum-config-manager --disable mysql80-community
@@ -27,10 +27,10 @@ sudo yum-config-manager --enable mysql57-community
 sudo yum install mysql-community-server -y
 ```
 
-### 3, $B%U%!%$%k$r0\F0(B
+### 3, ファイルを移動
 /var/www/html/
-$B$K!"0J2<$N%U%!%$%k$r@_CV$7$F$/$@$5$$!#(B
-EC2$B$X$N%"%C%W%m!<%I$O$*9%$-$JJ}K!$G$*4j$$$7$^$9!#(B
+に、以下のファイルを設置してください。
+EC2へのアップロードはお好きな方法でお願いします。
 
 index.html
 ```html
@@ -63,10 +63,10 @@ $sql="SELECT user_id,password FROM users WHERE user_id='$userid' AND password='$
 $result=mysqli_query($conn,$sql);
 
 if(mysqli_num_rows($result)!=0){
-  # $B%m%0%$%s@.8y$7$?$i$3$A$i(B
+  # ログイン成功したらこちら
   echo "login success";
 }else{
-$B!!(B# $B%m%0%$%s<:GT$7$?$i:G=i$N%Z!<%8$KLa$k(B
+　# ログイン失敗したら最初のページに戻る
   $url = '/';
   header('Location: ' . $url, true, 301);
 }
@@ -75,37 +75,37 @@ exit;
 ?>
 ```
 
-### 4, MySQL$B@_Dj(B
-**$B5/F0(B**
+### 4, MySQL設定
+**起動**
 ```
 sudo systemctl start mysqld.service
 ```
-**password$B@_Dj(B**
+**password設定**
 ```
-// $B$3$N%3%^%s%I$G!"=i4|@_Dj$5$l$?%Q%9%o!<%I$rC5$7$^$9!#(B
+// このコマンドで、初期設定されたパスワードを探します。
 sudo cat /var/log/mysqld.log | grep password
 
 
-// $B%Q%9%o!<%I$r(Broot$B$KJQ99$7$^$9!#(B
-// $B:G=i$N%3%^%s%I$G<hF@$7$?%Q%9%o!<%I$r;H$C$F%m%0%$%s(B
+// パスワードをrootに変更します。
+// 最初のコマンドで取得したパスワードを使ってログイン
 mysql -u root -p
 SET GLOBAL validate_password_length=0;
 SET GLOBAL validate_password_policy=LOW;
-// $B%Q%9%o!<%I$r(Broot$B$KJQ99(B
+// パスワードをrootに変更
 set password for root@localhost=password('root');
 ```
 
-**$B=i4|%G!<%?EjF~(B**
+**初期データ投入**
 ```
-// MySQL$B%m%0%$%s(B
+// MySQLログイン
 mysql -u root -p
 ```
-DB$B:n@.(B & $B;HMQ(BDB$BJQ99(B
+DB作成 & 使用DB変更
 ```
 create database sqli_test;
 use sqli_test;
  ```
-$B%F!<%V%k:n@.(B
+テーブル作成
  ```
 CREATE TABLE `users` (
 `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -117,16 +117,16 @@ CREATE TABLE `users` (
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 ```
-$B%l%3!<%I:n@.(B
+レコード作成
 ```
 INSERT INTO `users` VALUES (1,'test','test_user','test_pass','2019-12-04 01:44:47','2019-12-04 01:44:47');
 ```
 
-### 5, Apache $B5/F0(B
+### 5, Apache 起動
 ```
 sudo httpd
 ```
 
-### 6, $B%Z!<%8$K%"%/%;%9(B
-EC2$B$N%0%m!<%P%k(BIP$B$K%"%/%;%9$7$F$_$F$/$@$5$$!#(B
+### 6, ページにアクセス
+EC2のグローバルIPにアクセスしてみてください。
 
